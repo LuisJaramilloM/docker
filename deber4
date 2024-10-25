@@ -1,0 +1,52 @@
+docker build -t apache-vulnerable .
+
+docker tag imagen <tu-usuario-dockerhub>/imagen:latest
+
+docker tag vulnerable-apache cushico/fuerza-bruta:latest
+
+docker push cushico/vulnerable-apache // subir imagen a la nube
+
+docker pull cushico/vulnerable-apache //bajar de la nube
+microk8s kubectl apply -f deployment.yaml
+nohup sudo microk8s kubectl port-forward maquinavulnerable-58bc55d4fd-42f5b 8080:80 > port-forward.log 2>&1 &
+//-------------------- yaml --------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maquinavulnerable
+  labels:
+    app: maquinavulnerable
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: maquinavulnerable
+  template:
+    metadata:
+      labels:
+        app: maquinavulnerable
+    spec:
+      containers:
+      - name: maquinavulnerable
+        image: cushico/fuerza-bruta:latest  # Añade una etiqueta de versión si es posible
+        ports:
+        - containerPort: 80
+        resources:  # Opcional: Gestiona recursos para evitar problemas de rendimiento
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:  # Verifica que el contenedor esté listo para recibir tráfico
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:  # Comprueba que el contenedor sigue funcionando
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
