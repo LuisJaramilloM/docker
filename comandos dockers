@@ -1,0 +1,26 @@
+docker images    //visualiza las images que hay
+docker images rm node    //elimina node
+docker images rm node:18 //elimina node versión 18
+docker create imagen //( para crear un contenedor ejemplo con mongo)
+docker create mongo  //(es un forma más simplificada de colocar docker container create mongo)
+docker start id //(remplazar el id que fue obtenido en docker create mongo)
+docker ps //( contiene conteiner ID:, imagen, comando que utiliza para ejecutarse, cuando fue creado, su estado, el puerto que utiliza, nombre que tiene el contenedor).
+docker stop id //( remplazar id para detener el contenedor).
+docker ps -a //(podemos ver todos los contenedores incluso si no están corriendo).
+docker rm nombre_del_contenedor 
+
+//  Ejemplo
+docker pull mongo
+docker create --name nombre_que-quiero-ponerle-al-contenedor imagen
+docker create --name monguito mongo //(crea un contenedor llamado monguito, pero basado en la imagen mongo)
+docker create -p27017:27017 --name monguito mongo
+docker create -p27017 --name monguito2 mongo
+docker logs monguito
+docker logs -- follow monguito
+ 
+ // para arrancar el contenedor se lo puede realizar con los siguientes comandos.
+ 
+docker run //(busca si está la imagen, sino la descarga, luego crea el contenedor y luego inicia el contenedor)
+docker run mongo //(abre la imagen, pero tb abre los logs con follow)
+docker run -d mongo //(abre la imagen, y no abre los logs con follow).
+docker run --name monguito -p27017:27017 -d mongo
